@@ -9,57 +9,31 @@
     <script src="https://cdn.jsdelivr.net/gh/holtzy/D3-graph-gallery@master/LIB/d3.layout.cloud.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; padding: 0; background-color: #e0f7fa; font-family: 'Noto Sans KR', sans-serif; overflow-x: hidden; }
+        body { margin: 0; padding: 0; background-color: #e0f7fa; font-family: 'Noto Sans KR', sans-serif; overflow: auto; text-align: center;}
+        #container { width: 100%; min-height: 100vh; padding-top: 20px; display: flex; flex-direction: column; align-items: center; }
         
-        /* 상단 네비게이션 (모바일용 & 보조) */
-        #nav-bar { padding: 10px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; display: none; }
-        
-        /* 메인 컨테이너 */
-        #container { display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding-top: 20px; }
-        
-        /* 1. 구/군 선택 버튼 영역 (행성계 모양) */
+        /* 버튼 디자인 개선 */
         #planet-system {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            height: 200px; /* 모바일에서는 줄임 */
+            width: 95%; max-width: 900px;
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
             margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
         }
-
-        /* 버튼 스타일 */
         .btn {
-            border: none; padding: 8px 15px; border-radius: 20px;
-            font-family: 'Noto Sans KR', sans-serif; font-weight: bold; cursor: pointer;
+            border: none; padding: 8px 16px; border-radius: 25px;
+            font-family: 'Noto Sans KR', sans-serif; font-weight: 700; cursor: pointer;
             transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             font-size: 14px; background: white; color: #006064;
         }
-        .btn:hover { transform: scale(1.1); background: #b2ebf2; }
-        .btn.active { background: #006064; color: white; box-shadow: 0 0 10px #00bcd4; transform: scale(1.1); }
-        
-        /* 중앙 '부산' 버튼 (특별 대우) */
-        .btn-busan {
-            background: #00498c; color: white; font-size: 18px; padding: 10px 25px; border: 2px solid white;
-        }
+        .btn:hover { transform: translateY(-2px); background: #b2ebf2; }
+        .btn.active { background: #006064; color: white; box-shadow: 0 4px 10px rgba(0,96,100,0.4); transform: scale(1.05); }
+        .btn-busan { background: #00498c; color: white; font-size: 16px; padding: 10px 20px; }
 
-        /* 2. 워드클라우드 영역 */
-        #cloud-area { width: 95%; height: 600px; position: relative; }
-        svg { width: 100%; height: 100%; display: block; }
-        
-        h2 { color: #006064; margin: 0; font-family: 'Black Han Sans'; font-size: 2em; text-shadow: 2px 2px 0px white; }
+        #cloud-area { width: 95%; height: 600px; margin-top: 10px; }
+        h2 { color: #006064; margin: 0 0 10px 0; font-family: 'Black Han Sans'; font-size: 2.2em; text-shadow: 2px 2px 0px white; }
         .current-title { color: #d84315; }
         .word-link { cursor: pointer; transition: all 0.2s ease; }
-        .word-link:hover { opacity: 0.7 !important; }
-
-        /* PC 화면에서 행성계 모양 만들기 */
-        @media (min-width: 768px) {
-            #planet-system { height: auto; margin-bottom: 30px; }
-            .btn { margin: 5px; }
-        }
+        .word-link:hover { opacity: 0.7 !important; text-shadow: 1px 1px 5px rgba(255,255,255,0.8); }
+        svg { width: 100%; height: 100%; display: block; }
     </style>
 </head>
 <body>
@@ -68,7 +42,7 @@
         <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Updated: 2025-11-25</p>
 
         <div id="planet-system">
-            <button class="btn btn-busan active" onclick="changeRegion('Busan')">부산 전체</button>
+            <button class="btn btn-busan active" onclick="changeRegion('부산 전체')">부산 전체</button>
             <button class="btn" onclick="changeRegion('해운대구')">해운대구</button>
             <button class="btn" onclick="changeRegion('수영구')">수영구</button>
             <button class="btn" onclick="changeRegion('기장군')">기장군</button>
@@ -91,32 +65,30 @@
     </div>
 
     <script>
-        var allData = {"Busan": [], "\uac15\uc11c\uad6c": [], "\uae08\uc815\uad6c": [], "\ub0a8\uad6c": [], "\ub3d9\uad6c": [], "\ub3d9\ub798\uad6c": [], "\ubd80\uc0b0\uc9c4\uad6c": [], "\ubd81\uad6c": [], "\uc0ac\uc0c1\uad6c": [], "\uc0ac\ud558\uad6c": [], "\uc11c\uad6c": [], "\uc218\uc601\uad6c": [], "\uc5f0\uc81c\uad6c": [], "\uc601\ub3c4\uad6c": [], "\uc911\uad6c": [], "\ud574\uc6b4\ub300\uad6c": [], "\uae30\uc7a5\uad70": []};
+        var allData = {"\ubd80\uc0b0 \uc804\uccb4": [], "\ud574\uc6b4\ub300\uad6c": [], "\uc218\uc601\uad6c": [{"text": "\uad11\uc548\ub9ac\ud574\uc218\uc695\uc7a5", "size": 105.0, "url": "https://www.youtube.com/results?search_query=%EA%B4%91%EC%95%88%EB%A6%AC%20%EB%A7%9B%EC%A7%91%20%EA%B4%91%EC%95%88%EB%A6%AC%ED%95%B4%EC%88%98%EC%9A%95%EC%9E%A5", "count": 50}, {"text": "\ubbfc\ub77d\uc218\ubcc0\uacf5\uc6d0", "size": 87.0, "url": "https://www.youtube.com/results?search_query=%EA%B4%91%EC%95%88%EB%A6%AC%20%EB%A7%9B%EC%A7%91%20%EB%AF%BC%EB%9D%BD%EC%88%98%EB%B3%80%EA%B3%B5%EC%9B%90", "count": 40}, {"text": "\ub4dc\ub860\uc1fc", "size": 69.0, "url": "https://www.youtube.com/results?search_query=%EA%B4%91%EC%95%88%EB%A6%AC%20%EB%A7%9B%EC%A7%91%20%EB%93%9C%EB%A1%A0%EC%87%BC", "count": 30}, {"text": "\ud1a4\uc1fc\uc6b0", "size": 60.0, "url": "https://www.youtube.com/results?search_query=%EA%B4%91%EC%95%88%EB%A6%AC%20%EB%A7%9B%EC%A7%91%20%ED%86%A4%EC%87%BC%EC%9A%B0", "count": 25}], "\uae30\uc7a5\uad70": [{"text": "\ud574\ub3d9\uc6a9\uad81\uc0ac", "size": 105.0, "url": "https://www.youtube.com/results?search_query=%EA%B8%B0%EC%9E%A5%20%EB%A7%9B%EC%A7%91%20%ED%95%B4%EB%8F%99%EC%9A%A9%EA%B6%81%EC%82%AC", "count": 50}, {"text": "\uc544\ub09c\ud2f0\ucf54\ube0c", "size": 87.0, "url": "https://www.youtube.com/results?search_query=%EA%B8%B0%EC%9E%A5%20%EB%A7%9B%EC%A7%91%20%EC%95%84%EB%82%9C%ED%8B%B0%EC%BD%94%EB%B8%8C", "count": 40}, {"text": "\uce60\ub4dc\ub7f0\uc2a4\ubba4\uc9c0\uc5c4", "size": 69.0, "url": "https://www.youtube.com/results?search_query=%EA%B8%B0%EC%9E%A5%20%EB%A7%9B%EC%A7%91%20%EC%B9%A0%EB%93%9C%EB%9F%B0%EC%8A%A4%EB%AE%A4%EC%A7%80%EC%97%84", "count": 30}, {"text": "\ub86f\ub370\uc544\uc6b8\ub81b", "size": 60.0, "url": "https://www.youtube.com/results?search_query=%EA%B8%B0%EC%9E%A5%20%EB%A7%9B%EC%A7%91%20%EB%A1%AF%EB%8D%B0%EC%95%84%EC%9A%B8%EB%A0%9B", "count": 25}], "\uc601\ub3c4\uad6c": [{"text": "\ud770\uc5ec\uc6b8\ubb38\ud654\ub9c8\uc744", "size": 105.0, "url": "https://www.youtube.com/results?search_query=%EB%B6%80%EC%82%B0%20%EC%98%81%EB%8F%84%20%EB%A7%9B%EC%A7%91%20%ED%9D%B0%EC%97%AC%EC%9A%B8%EB%AC%B8%ED%99%94%EB%A7%88%EC%9D%84", "count": 50}, {"text": "\ud53c\uc544\ud06c", "size": 87.0, "url": "https://www.youtube.com/results?search_query=%EB%B6%80%EC%82%B0%20%EC%98%81%EB%8F%84%20%EB%A7%9B%EC%A7%91%20%ED%94%BC%EC%95%84%ED%81%AC", "count": 40}, {"text": "\ud0dc\uc885\ub300", "size": 69.0, "url": "https://www.youtube.com/results?search_query=%EB%B6%80%EC%82%B0%20%EC%98%81%EB%8F%84%20%EB%A7%9B%EC%A7%91%20%ED%83%9C%EC%A2%85%EB%8C%80", "count": 30}, {"text": "\ud574\ub140\ucd0c", "size": 60.0, "url": "https://www.youtube.com/results?search_query=%EB%B6%80%EC%82%B0%20%EC%98%81%EB%8F%84%20%EB%A7%9B%EC%A7%91%20%ED%95%B4%EB%85%80%EC%B4%8C", "count": 25}], "\ubd80\uc0b0\uc9c4\uad6c": [], "\ub3d9\ub798\uad6c": [], "\uae08\uc815\uad6c": [], "\ub0a8\uad6c": [], "\uc911\uad6c": [{"text": "BIFF\uad11\uc7a5", "size": 105.0, "url": "https://www.youtube.com/results?search_query=%EB%82%A8%ED%8F%AC%EB%8F%99%20%EB%A7%9B%EC%A7%91%20BIFF%EA%B4%91%EC%9E%A5", "count": 50}, {"text": "\uad6d\uc81c\uc2dc\uc7a5", "size": 87.0, "url": "https://www.youtube.com/results?search_query=%EB%82%A8%ED%8F%AC%EB%8F%99%20%EB%A7%9B%EC%A7%91%20%EA%B5%AD%EC%A0%9C%EC%8B%9C%EC%9E%A5", "count": 40}, {"text": "\uc6a9\ub450\uc0b0\uacf5\uc6d0", "size": 69.0, "url": "https://www.youtube.com/results?search_query=%EB%82%A8%ED%8F%AC%EB%8F%99%20%EB%A7%9B%EC%A7%91%20%EC%9A%A9%EB%91%90%EC%82%B0%EA%B3%B5%EC%9B%90", "count": 30}, {"text": "\uc528\uc557\ud638\ub5a1", "size": 60.0, "url": "https://www.youtube.com/results?search_query=%EB%82%A8%ED%8F%AC%EB%8F%99%20%EB%A7%9B%EC%A7%91%20%EC%94%A8%EC%95%97%ED%98%B8%EB%96%A1", "count": 25}], "\uc11c\uad6c": [{"text": "\uc1a1\ub3c4\ucf00\uc774\ube14\uce74", "size": 105.0, "url": "https://www.youtube.com/results?search_query=%EB%B6%80%EC%82%B0%20%EC%86%A1%EB%8F%84%20%EB%A7%9B%EC%A7%91%20%EC%86%A1%EB%8F%84%EC%BC%80%EC%9D%B4%EB%B8%94%EC%B9%B4", "count": 50}, {"text": "\uc554\ub0a8\uacf5\uc6d0", "size": 87.0, "url": "https://www.youtube.com/results?search_query=%EB%B6%80%EC%82%B0%20%EC%86%A1%EB%8F%84%20%EB%A7%9B%EC%A7%91%20%EC%95%94%EB%82%A8%EA%B3%B5%EC%9B%90", "count": 40}, {"text": "\uc870\uac1c\uad6c\uc774", "size": 69.0, "url": "https://www.youtube.com/results?search_query=%EB%B6%80%EC%82%B0%20%EC%86%A1%EB%8F%84%20%EB%A7%9B%EC%A7%91%20%EC%A1%B0%EA%B0%9C%EA%B5%AC%EC%9D%B4", "count": 30}, {"text": "\uace0\ub4f1\uc5b4\ucd95\uc81c", "size": 60.0, "url": "https://www.youtube.com/results?search_query=%EB%B6%80%EC%82%B0%20%EC%86%A1%EB%8F%84%20%EB%A7%9B%EC%A7%91%20%EA%B3%A0%EB%93%B1%EC%96%B4%EC%B6%95%EC%A0%9C", "count": 25}], "\ub3d9\uad6c": [], "\uc0ac\ud558\uad6c": [], "\uc0ac\uc0c1\uad6c": [], "\ubd81\uad6c": [], "\uac15\uc11c\uad6c": [], "\uc5f0\uc81c\uad6c": [{"text": "\uc628\ucc9c\ucc9c", "size": 105.0, "url": "https://www.youtube.com/results?search_query=%EC%97%B0%EC%82%B0%EB%8F%99%20%EB%A7%9B%EC%A7%91%20%EC%98%A8%EC%B2%9C%EC%B2%9C", "count": 50}, {"text": "\uc5f0\uc0b0\ub85c\ud130\ub9ac", "size": 87.0, "url": "https://www.youtube.com/results?search_query=%EC%97%B0%EC%82%B0%EB%8F%99%20%EB%A7%9B%EC%A7%91%20%EC%97%B0%EC%82%B0%EB%A1%9C%ED%84%B0%EB%A6%AC", "count": 40}, {"text": "\uace0\ubd84\uad70", "size": 69.0, "url": "https://www.youtube.com/results?search_query=%EC%97%B0%EC%82%B0%EB%8F%99%20%EB%A7%9B%EC%A7%91%20%EA%B3%A0%EB%B6%84%EA%B5%B0", "count": 30}, {"text": "\ubc30\uc0b0", "size": 60.0, "url": "https://www.youtube.com/results?search_query=%EC%97%B0%EC%82%B0%EB%8F%99%20%EB%A7%9B%EC%A7%91%20%EB%B0%B0%EC%82%B0", "count": 25}]};
         var myColor = d3.scaleOrdinal().range(["#01579b", "#0288d1", "#00acc1", "#00bfa5", "#ff6f00", "#d84315", "#c2185b"]);
         var layout;
 
-        // 초기 실행 (부산 전체)
-        drawCloud(allData['Busan']);
+        drawCloud(allData['부산 전체']);
 
         function changeRegion(region) {
-            // 1. 제목 변경
-            document.getElementById('region-title').innerText = (region === 'Busan') ? '부산 전체' : region;
+            document.getElementById('region-title').innerText = region;
             
-            // 2. 버튼 활성화 스타일 변경
             var btns = document.getElementsByClassName('btn');
             for (var i = 0; i < btns.length; i++) {
                 btns[i].classList.remove('active');
-                if (btns[i].innerText.includes(region === 'Busan' ? '부산' : region)) {
+                if (btns[i].innerText === region) {
                     btns[i].classList.add('active');
                 }
             }
 
-            // 3. 구름 다시 그리기
-            document.getElementById('cloud-area').innerHTML = ''; // 기존 그림 지우기
+            document.getElementById('cloud-area').innerHTML = '';
+            
             if (allData[region] && allData[region].length > 0) {
                 drawCloud(allData[region]);
             } else {
-                document.getElementById('cloud-area').innerHTML = '<h3>데이터가 없습니다.</h3>';
+                // 데이터가 아예 없을 때(비상 데이터도 실패 시) 처리
+                document.getElementById('cloud-area').innerHTML = '<h3 style="color:#666; margin-top:50px;">데이터를 수집 중입니다...</h3>';
             }
         }
 
@@ -145,32 +117,29 @@
                 .attr("viewBox", "0 0 " + width + " " + height)
                 .attr("preserveAspectRatio", "xMidYMid meet")
                 .append("g")
-                .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+                  .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
                 .selectAll("text")
-                .data(words)
+                  .data(words)
                 .enter().append("text")
-                .attr("class", "word-link")
-                .style("font-size", function(d) { return d.size + "px"; })
-                .style("font-family", "'Noto Sans KR', sans-serif")
-                .style("font-weight", "900")
-                .style("fill", function(d, i) { return myColor(i); })
-                .attr("text-anchor", "middle")
-                .attr("transform", function(d) {
+                  .attr("class", "word-link")
+                  .style("font-size", function(d) { return d.size + "px"; })
+                  .style("font-family", "'Noto Sans KR', sans-serif")
+                  .style("font-weight", "900")
+                  .style("fill", function(d, i) { return myColor(i); })
+                  .attr("text-anchor", "middle")
+                  .attr("transform", function(d) {
                     return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                })
-                .text(function(d) { return d.text; })
-                .on("click", function(d) { window.open(d.url, '_blank'); })
-                .append("title")
-                .text(function(d) { return d.text; });
+                  })
+                  .text(function(d) { return d.text; })
+                  .on("click", function(d) { window.open(d.url, '_blank'); })
+                  .append("title")
+                  .text(function(d) { return d.text; });
         }
         
-        // 화면 크기 바뀔 때 재조정
         window.addEventListener('resize', function() {
-            var currentRegion = document.querySelector('.btn.active').innerText.replace(' 전체', '');
-            if(currentRegion === '부산') currentRegion = 'Busan';
-            
+            var currentRegion = document.getElementById('region-title').innerText;
             document.getElementById('cloud-area').innerHTML = '';
-            drawCloud(allData[currentRegion]);
+            if(allData[currentRegion]) drawCloud(allData[currentRegion]);
         });
     </script>
 </body>
