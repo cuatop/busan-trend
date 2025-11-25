@@ -2,8 +2,8 @@ name: Busan Trend Update
 
 on:
   schedule:
-    - cron: '0 23 * * *' # 한국 시간 아침 8시
-  workflow_dispatch:      # 수동 실행 버튼
+    - cron: '0 23 * * *' # 매일 한국 아침 8시
+  workflow_dispatch:      # 수동 실행
 
 permissions:
   contents: write
@@ -20,14 +20,17 @@ jobs:
         with:
           python-version: '3.9'
 
-      # [핵심 수정] 여기서 유튜브 검색 도구를 설치해줘야 합니다!
-      - name: 필요한 도구 설치
-        run: pip install requests youtube-search-python
+      - name: 도구 설치
+        # 이번엔 youtube-search-python 필요 없습니다. requests만 있으면 됨.
+        run: pip install requests
 
       - name: 로봇 실행
+        env:
+          # [매우 중요] 깃허브 금고(Secrets)에서 키를 꺼내 로봇에게 줍니다.
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python main.py
 
-      - name: 결과물 저장 및 공개
+      - name: 결과 올리기
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
